@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Mail\MensagemTesteMail;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,11 +18,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
-Route::get('/home', 'HomeController@index')->name('home');
-Route::resource('tarefa', 'TarefaController');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])
+    ->name('home')
+    ->middleware('verified');
 
-Route::get('/mensagem-teste', function(){
+Route::resource('tarefa', 'TarefaController')
+    ->middleware('verified');
+
+Route::get('/mensagem-teste', function () {
     return new MensagemTesteMail();
+    //Mail::to('atendimento@jorgesantana.net.br')->send(new MensagemTesteMail());
+    //return 'E-mail enviado com sucesso!';
 });

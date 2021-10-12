@@ -2,21 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Tarefa;
+use Mail;
+use App\Mail\NovaTarefaMail;
+use App\Models\Tarefa;
 use Illuminate\Http\Request;
 
 class TarefaController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
-        //$this->middleware('auth');
+        $this->middleware('auth');
     }
-
     /**
      * Display a listing of the resource.
      *
@@ -24,7 +20,7 @@ class TarefaController extends Controller
      */
     public function index()
     {
-        //
+        return 'Chegamos até aqui';
     }
 
     /**
@@ -34,7 +30,7 @@ class TarefaController extends Controller
      */
     public function create()
     {
-        //
+        return view('tarefa.create');
     }
 
     /**
@@ -45,24 +41,28 @@ class TarefaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $tarefa = Tarefa::create($request->all());
+        $destinario = auth()->user()->email; //e-mail do usuário logado (autenticado)
+        Mail::to($destinario)->send(new NovaTarefaMail($tarefa));
+
+        return redirect()->route('tarefa.show', ['tarefa' => $tarefa->id]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Tarefa  $tarefa
+     * @param  \App\Models\Tarefa  $tarefa
      * @return \Illuminate\Http\Response
      */
     public function show(Tarefa $tarefa)
     {
-        //
+        return view('tarefa.show', ['tarefa' => $tarefa]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Tarefa  $tarefa
+     * @param  \App\Models\Tarefa  $tarefa
      * @return \Illuminate\Http\Response
      */
     public function edit(Tarefa $tarefa)
@@ -74,7 +74,7 @@ class TarefaController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Tarefa  $tarefa
+     * @param  \App\Models\Tarefa  $tarefa
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Tarefa $tarefa)
@@ -85,7 +85,7 @@ class TarefaController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Tarefa  $tarefa
+     * @param  \App\Models\Tarefa  $tarefa
      * @return \Illuminate\Http\Response
      */
     public function destroy(Tarefa $tarefa)
