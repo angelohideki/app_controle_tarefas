@@ -15,20 +15,28 @@ use App\Mail\MensagemTesteMail;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('bem-vindo');
 });
 
 Auth::routes(['verify' => true]);
 
+/*
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])
     ->name('home')
     ->middleware('verified');
+*/
 
+Route::get('tarefa/exportacao/{extensao}', 'TarefaController@exportacao')
+    ->name('tarefa.exportacao');
+
+    Route::get('tarefa/exportar', 'TarefaController@exportar')
+    ->name('tarefa.exportar');
+    
 Route::resource('tarefa', 'TarefaController')
     ->middleware('verified');
 
-Route::get('/mensagem-teste', function () {
+Route::get('/mensagem-teste', function() {
     return new MensagemTesteMail();
-    //Mail::to('atendimento@jorgesantana.net.br')->send(new MensagemTesteMail());
-    //return 'E-mail enviado com sucesso!';
+    //Mail::to('angelonoda@gmail.com')->send(new MensagemTesteMail());
+
 });
